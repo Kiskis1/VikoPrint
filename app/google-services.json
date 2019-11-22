@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "650553450747",
+    "firebase_url": "https://vikoprint-d04c5.firebaseio.com",
+    "project_id": "vikoprint-d04c5",
+    "storage_bucket": "vikoprint-d04c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650553450747:android:57a21886daa8f2b1cdd05e",
+        "android_client_info": {
+          "package_name": "lt.viko.eif.vikoprint"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650553450747-5620m1ad65ehcbe3p4ug6hqcchn1gesc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lt.viko.eif.vikoprint",
+            "certificate_hash": "27457f811ca98561225f4dacc6399763c8fe2166"
+          }
+        },
+        {
+          "client_id": "650553450747-cgh59r6mil2ius1sh92gbj0cp0v3ghla.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCE7rmGkMpEwAQmdsbimpZpjFjGeYRX1vQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650553450747-cgh59r6mil2ius1sh92gbj0cp0v3ghla.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
