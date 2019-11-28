@@ -42,8 +42,10 @@ public class TransactionAdapter
         holder.bind(getItem(position));
     }
 
-    void swapData(List<Transaction> data) {
+    public void swapData(List<Transaction> data) {
         submitList(data);
+        notifyDataSetChanged();
+
     }
 
     public class TransactionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -72,9 +74,9 @@ public class TransactionAdapter
             mPageCount = itemView.findViewById(R.id.recycler_pagesView);
             mPoints = itemView.findViewById(R.id.recycler_pointsView);
 
-            mDate.setText(item.getDate());
-            mPageCount.setText(item.getPageCount());
-            mPoints.setText(item.getPoints());
+            mDate.setText(""+item.getDate());
+            mPageCount.setText(""+item.getPageCount());
+            mPoints.setText(""+item.getPoints());
         }
     }
 

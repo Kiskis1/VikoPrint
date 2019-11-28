@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -13,6 +14,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.fge.jackson.JsonLoader;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.report.ProcessingMessage;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
+import com.github.fge.jsonschema.main.JsonSchema;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,6 +29,9 @@ import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+
+import java.io.IOException;
+import java.util.Iterator;
 
 import lt.viko.eif.vikoprint.Fragments.AboutFragment;
 import lt.viko.eif.vikoprint.Fragments.HomeFragment;
@@ -38,6 +50,27 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseUser = FirebaseAuth.getInstance();
     private TransactionViewModel transactionViewModel;
     private ProfileViewModel profileViewModel;
+
+    private static final String SCHEMA = "{\n" +
+            "  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n" +
+            "  \"type\": \"object\",\n" +
+            "  \"properties\": {\n" +
+            "    \"date\": {\n" +
+            "      \"type\": \"string\"\n" +
+            "    },\n" +
+            "    \"points\": {\n" +
+            "      \"type\": \"integer\"\n" +
+            "    },\n" +
+            "    \"pageCount\": {\n" +
+            "      \"type\": \"integer\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"required\": [\n" +
+            "    \"date\",\n" +
+            "    \"points\",\n" +
+            "    \"pageCount\"\n" +
+            "  ]\n" +
+            "}";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,22 +100,23 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 Log.d("MainActivity", "Scanned");
-                Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
 
                 String json = result.getContents();
-                try {
-                    Gson gson = new Gson();
-                    trans = gson.fromJson(json, Transaction.class);
-                    trans.setFirebaseUser(firebaseUser.getUid());
-                    transactionViewModel.saveTransaction(trans);
-                    profileViewModel.deductPoints(trans);
+                if (validate(json,SCHEMA)){
+                    try {
+                        Gson gson = new Gson();
+                        trans = gson.fromJson(json, Transaction.class);
+                        trans.setFirebaseUser(firebaseUser.getUid());
+                        transactionViewModel.saveTransaction(trans);
+                        profileViewModel.deductPoints(trans);
+                        Log.d("GSON", trans.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                    //Log.d("profile", "" + profileViewModel.getProfile().getValue());
-                    //deductPoints(trans, profileViewModel.getProfile().getValue());
-                    Log.d("GSON", trans.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+
 
             }
         } else {
@@ -116,5 +150,40 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             };
+
+    public boolean validate(String jsonData, String jsonSchema) {
+        ProcessingReport report = null;
+        boolean result = false;
+        try {
+            System.out.println("Applying schema: @<@<"+jsonSchema+">@>@ to data: #<#<"+jsonData+">#>#");
+            JsonNode schemaNode = JsonLoader.fromString(jsonSchema);
+            JsonNode data = JsonLoader.fromString(jsonData);
+            JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
+            JsonSchema schema = factory.getJsonSchema(schemaNode);
+            report = schema.validate(data);
+        } catch (JsonParseException jpex) {
+            System.out.println("Error. Something went wrong trying to parse json data: #<#<"+jsonData+
+                    ">#># or json schema: @<@<"+jsonSchema+">@>@. Are the double quotes included? "+jpex.getMessage());
+            //jpex.printStackTrace();
+        } catch (ProcessingException pex) {
+            System.out.println("Error. Something went wrong trying to process json data: #<#<"+jsonData+
+                    ">#># with json schema: @<@<"+jsonSchema+">@>@ "+pex.getMessage());
+            //pex.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Error. Something went wrong trying to read json data: #<#<"+jsonData+
+                    ">#># or json schema: @<@<"+jsonSchema+">@>@");
+            //e.printStackTrace();
+        }
+        if (report != null) {
+            Iterator<ProcessingMessage> iter = report.iterator();
+            while (iter.hasNext()) {
+                ProcessingMessage pm = iter.next();
+                System.out.println("Processing Message: "+pm.getMessage());
+            }
+            result = report.isSuccess();
+        }
+        System.out.println(" Result=" +result);
+        return result;
+    }
 
     }

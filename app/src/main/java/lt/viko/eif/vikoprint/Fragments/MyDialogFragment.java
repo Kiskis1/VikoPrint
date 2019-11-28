@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import lt.viko.eif.vikoprint.MainActivity;
 import lt.viko.eif.vikoprint.R;
 
@@ -22,7 +24,7 @@ import lt.viko.eif.vikoprint.R;
  */
 public class MyDialogFragment extends DialogFragment {
 
-    public AlertDialog.Builder builder;
+    private AlertDialog.Builder builder;
 
     public MyDialogFragment() {
         // Required empty public constructor
@@ -37,6 +39,7 @@ public class MyDialogFragment extends DialogFragment {
         return inflater.inflate(R.layout.fragment_my_dialog, container, false);
     }
 
+    @NotNull
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         builder = new AlertDialog.Builder(getActivity());

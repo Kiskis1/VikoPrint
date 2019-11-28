@@ -2,12 +2,14 @@ package lt.viko.eif.vikoprint.Model;
 
 import android.net.Uri;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Profile {
     private String email;
-    private Uri imageURL;
+    private String imageURL;
     private int points;
 
-    public Profile(String email, Uri imageURL, int points) {
+    public Profile(String email, String imageURL, int points) {
         this.email = email;
         this.imageURL = imageURL;
         this.points = points;
@@ -22,11 +24,11 @@ public class Profile {
         this.email = email;
     }
 
-    public Uri getImageURL() {
+    public String getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(Uri imageURL) {
+    public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
     }
 
@@ -38,6 +40,7 @@ public class Profile {
         this.points = points;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Profile{" +

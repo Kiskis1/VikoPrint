@@ -18,10 +18,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/ASL-2.0.txt'
+        exclude "META-INF/LGPL-3.0.txt"
+        pickFirst 'draftv3/schema'
+        pickFirst 'draftv4/schema'
+    }
 }
 
 dependencies {
-    def lifecycle_version = "2.0.0"
+    def lifecycle_version = "2.1.0"
     def nav_version = "2.1.0"
 
     implementation "androidx.navigation:navigation-fragment:$nav_version"
@@ -54,4 +60,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.google.firebase:firebase-database:19.2.0'
+
+    // https://mvnrepository.com/artifact/com.github.fge/json-schema-validator
+    implementation group: 'com.github.fge', name: 'json-schema-validator', version: '2.2.6'
+
 }

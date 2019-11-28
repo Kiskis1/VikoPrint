@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VikoPrint</string>
+    <string name="btn_change_image">Pakeisti</string>
+    <string name="cancel">Atšaukti</string>
+    <string name="historyView">Istorija:</string>
+    <string name="loading">Kraunama…</string>
+    <string name="login_signin">Prisijungti</string>
+    <string name="login_signout">Atsijungti</string>
+    <string name="menu_home">Pagrindinis</string>
+    <string name="menu_profile">Profilis</string>
+    <string name="menu_scan">Skenuoti</string>
+    <string name="pointsValue">Taškai: %d %s</string>
+    <string name="points_string">Taškai</string>
+    <string name="profilePicture">Profilio nuotrauka</string>
+</resources>

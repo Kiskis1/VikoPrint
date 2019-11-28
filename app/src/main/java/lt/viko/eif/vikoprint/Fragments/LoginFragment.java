@@ -2,6 +2,7 @@ package lt.viko.eif.vikoprint.Fragments;
 
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -59,9 +60,9 @@ public class LoginFragment extends Fragment {
 
 
     private static final int RC_SIGN_IN = 123;
-    Button loginBtn, signoutBtn;
-    BottomNavigationView navBar;
-    ProfileViewModel profileViewModel;
+    private BottomNavigationView navBar;
+    private ProfileViewModel profileViewModel;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,9 +81,9 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         navBar = getActivity().findViewById(R.id.menu);
-        navBar.setVisibility(view.GONE);
+        navBar.setVisibility(View.GONE);
 
-        signoutBtn = view.findViewById(R.id.SignOut);
+        Button signoutBtn = view.findViewById(R.id.SignOut);
         signoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +91,9 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        loginBtn = view.findViewById(R.id.SignIn);
+        final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.beep);
+
+        Button loginBtn = view.findViewById(R.id.SignIn);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,10 +111,19 @@ public class LoginFragment extends Fragment {
                                 .setAvailableProviders(providers)
                                 .build(),
                         RC_SIGN_IN);
+
+                mp.start();
+            }
+        });
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
             }
         });
 
     }
+
+
 
     // [START auth_fui_result]
     @Override
@@ -142,7 +154,7 @@ public class LoginFragment extends Fragment {
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 // ...
-                Toast.makeText(getContext(), "NEPAVYKO PRISIJUNGTI", Toast.LENGTH_LONG);
+                Toast.makeText(getContext(), "NEPAVYKO PRISIJUNGTI", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -182,7 +194,7 @@ public class LoginFragment extends Fragment {
                             if (!egzistuoja){
                                 //Log.d("USEREMAIL", firebaseUser.getEmail());
 
-                                Profile profile = new Profile(firebaseUser.getEmail(), firebaseUser.getPhotoUrl(), 0);
+                                Profile profile = new Profile(firebaseUser.getEmail(), firebaseUser.getPhotoUrl().toString(), 0);
                                 //sukurti nauja irasa DB
                                 profileViewModel.saveProfile(profile);
                                 //Log.d("CREATIONDATE", String.valueOf(firebaseUser.getMetadata().getCreationTimestamp()));

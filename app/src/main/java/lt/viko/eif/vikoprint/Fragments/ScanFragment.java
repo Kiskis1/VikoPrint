@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 
@@ -48,9 +49,8 @@ public class ScanFragment extends Fragment {
         integrator.setCameraId(0);
         integrator.setBeepEnabled(false);
         integrator.setBarcodeImageEnabled(false);
-        integrator.setOrientationLocked(false);
+        integrator.setOrientationLocked(true);
         integrator.initiateScan();
-
 
         //DialogFragment dialog = new MyDialogFragment();
         //dialog.show(getFragmentManager(), "example");

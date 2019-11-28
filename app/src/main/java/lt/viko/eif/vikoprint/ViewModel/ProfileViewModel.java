@@ -1,6 +1,7 @@
 package lt.viko.eif.vikoprint.ViewModel;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.List;
 
+import lt.viko.eif.vikoprint.MainActivity;
 import lt.viko.eif.vikoprint.Model.Profile;
 import lt.viko.eif.vikoprint.Model.Transaction;
 import lt.viko.eif.vikoprint.Repositories.ProfileRepository;
@@ -53,9 +55,11 @@ public class ProfileViewModel extends ViewModel {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
                         Profile prof  = document.toObject(Profile.class);
-                        prof.setPoints(prof.getPoints()-trans.getPoints());
-                        repository.saveProfile(prof);
-                        Log.d("document", prof.toString());
+                        if (prof.getPoints() > trans.getPoints()){
+                            prof.setPoints(prof.getPoints()-trans.getPoints());
+                            repository.saveProfile(prof);
+                            Log.d("document", prof.toString());
+                        }
                     }
                     else {
                         Log.d("Document","DOCUMENT NULL");
@@ -68,5 +72,4 @@ public class ProfileViewModel extends ViewModel {
         });
 
     }
-
 }
