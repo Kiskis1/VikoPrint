@@ -39,10 +39,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import lt.viko.eif.vikoprint.Model.Profile;
 import lt.viko.eif.vikoprint.R;
 import lt.viko.eif.vikoprint.Repositories.ProfileRepository;
+import lt.viko.eif.vikoprint.Repositories.StorageRepository;
 import lt.viko.eif.vikoprint.ViewModel.ProfileViewModel;
 
 import static android.app.Activity.RESULT_OK;
@@ -62,6 +64,7 @@ public class LoginFragment extends Fragment {
     private static final int RC_SIGN_IN = 123;
     private BottomNavigationView navBar;
     private ProfileViewModel profileViewModel;
+    boolean egzistuoja = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -139,6 +142,8 @@ public class LoginFragment extends Fragment {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
                 userExists2(firebaseUser);
+
+                //profileViewModel.saveProfile(new Profile("asd","asd",0));
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -160,7 +165,7 @@ public class LoginFragment extends Fragment {
     }
     // [END auth_fui_result]
 
-    public void signOut() {
+    private void signOut() {
         // [START auth_fui_signout]
         AuthUI.getInstance()
                 .signOut(getView().getContext())
@@ -171,35 +176,30 @@ public class LoginFragment extends Fragment {
                 });
         // [END auth_fui_signout]
     }
-    private void userExists2(final FirebaseUser firebaseUser){
 
+    private void userExists2(final FirebaseUser firebaseUser){
         FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
         mDatabase.collection("profiles")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        boolean egzistuoja = false;
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                //Log.d("DOCUMENT", "" + document.getData());
+                                Log.d("EXISTS", "onComplete: ");
 
                                 if (document.getId().equals(firebaseUser.getUid())){
-                                    egzistuoja = true;
-                                    //Log.d("EGZISTUOJA", String.valueOf(egzistuoja));
+                                    setBool(true);
+                                    Log.d("EGZISTUOJA", String.valueOf(egzistuoja));
                                 }
-                               // Log.d("FIREBASEDOCUMENT", document.getId() + " => " + document.getData());
                             }
-
+                            Log.d("EXISTS", String.valueOf(egzistuoja));
                             if (!egzistuoja){
-                                //Log.d("USEREMAIL", firebaseUser.getEmail());
-
-                                Profile profile = new Profile(firebaseUser.getEmail(), firebaseUser.getPhotoUrl().toString(), 0);
+                                Profile profile = new Profile(firebaseUser.getEmail(), StorageRepository.getInstance().getDefaultImage(), 5);
                                 //sukurti nauja irasa DB
                                 profileViewModel.saveProfile(profile);
-                                //Log.d("CREATIONDATE", String.valueOf(firebaseUser.getMetadata().getCreationTimestamp()));
-                                //Log.d("LASTLOGIN", String.valueOf(firebaseUser.getMetadata().getLastSignInTimestamp()));
                             }
+//IFO VIETA
                         }
                         else {
                             Log.d("ERRORFIREBASEDOCUMENT", "Error getting documents: ", task.getException());
@@ -207,7 +207,27 @@ public class LoginFragment extends Fragment {
                     }
                 });
     }
+
+    private void setBool(boolean bool){
+        egzistuoja=bool;
+    }
+
+    private void createUser(FirebaseUser firebaseUser){
+        Profile profile = new Profile(firebaseUser.getEmail(), StorageRepository.getInstance().getDefaultImage(), 0);
+        //sukurti nauja irasa DB
+        profileViewModel.saveProfile(profile);
+    }
 }
+
+
+
+
+
+
+
+
+
+
 
 /*
     public boolean exists;

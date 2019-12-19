@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -40,9 +41,6 @@ public class ProfileViewModel extends ViewModel {
         return profile;
     }
 
-
-
-
     public void saveProfile (Profile profile) {
         repository.saveProfile(profile);
     }
@@ -71,5 +69,28 @@ public class ProfileViewModel extends ViewModel {
             }
         });
 
+    }
+
+    public void addPoints(final int points){
+        repository.getProfilis().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        Profile prof  = document.toObject(Profile.class);
+                            prof.setPoints(prof.getPoints()+points);
+                            repository.saveProfile(prof);
+                            Log.d("document", prof.toString());
+                    }
+                    else {
+                        Log.d("Document","DOCUMENT NULL");
+                    }
+                }
+                else {
+                    Log.d("document", "task failed");
+                }
+            }
+        });
     }
 }

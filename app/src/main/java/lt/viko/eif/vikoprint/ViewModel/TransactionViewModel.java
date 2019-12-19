@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.common.collect.TreeRangeMap;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -25,11 +26,12 @@ public class TransactionViewModel extends ViewModel {
 
     private TransactionRepository repository = TransactionRepository.getInstance();
 
+    private FirebaseAuth firebaseUser = FirebaseAuth.getInstance();
+
     private MutableLiveData<List<Transaction>> trans = new MutableLiveData<>();
 
     private List<Transaction> listas = new ArrayList<>();
 
-    private MutableLiveData<List<Transaction>> items = new MutableLiveData<>();
 
 
     public LiveData<List<Transaction>> getTransactions(){
@@ -39,7 +41,8 @@ public class TransactionViewModel extends ViewModel {
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
                     Transaction item = queryDocumentSnapshot.toObject(Transaction.class);
-                    listas.add(item);
+                    if (item.getFirebaseUser().equals(firebaseUser.getCurrentUser().getUid()))
+                        listas.add(item);
                 }
                 trans.setValue(listas);
             }
@@ -47,14 +50,6 @@ public class TransactionViewModel extends ViewModel {
 
         return trans;
     }
-
-    public void init () {
-        items = repository.getMutableLiveDataItems();
-    }
-    public LiveData<List<Transaction>> getItems(){
-        return items;
-    }
-
 
     public void saveTransaction (Transaction trans) {
         repository.saveTransaction(trans);

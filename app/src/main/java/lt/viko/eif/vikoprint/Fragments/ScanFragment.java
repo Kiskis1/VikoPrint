@@ -44,7 +44,7 @@ public class ScanFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setPrompt("Scan");
         integrator.setCameraId(0);
         integrator.setBeepEnabled(false);
@@ -52,9 +52,8 @@ public class ScanFragment extends Fragment {
         integrator.setOrientationLocked(true);
         integrator.initiateScan();
 
-        //DialogFragment dialog = new MyDialogFragment();
-        //dialog.show(getFragmentManager(), "example");
-        //dialog.builder.setMessage("SCANFRAGMENT");
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new HomeFragment()).commit();
 
     }
 

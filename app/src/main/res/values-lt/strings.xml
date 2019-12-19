@@ -13,4 +13,8 @@
     <string name="pointsValue">Taškai: %d %s</string>
     <string name="points_string">Taškai</string>
     <string name="profilePicture">Profilio nuotrauka</string>
+    <string name="adButton">Gauti Taškų</string>
+    <string name="recycler_text_date">Data:</string>
+    <string name="recycler_text_pages">Psl Skaicius:</string>
+    <string name="recycler_text_points">Taškai:</string>
 </resources>

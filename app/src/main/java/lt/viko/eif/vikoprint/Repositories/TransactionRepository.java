@@ -3,19 +3,14 @@ package lt.viko.eif.vikoprint.Repositories;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import lt.viko.eif.vikoprint.Model.Transaction;
 
@@ -32,10 +27,6 @@ public class TransactionRepository {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth firebaseUser = FirebaseAuth.getInstance();
 
-    private ArrayList<Transaction> items = new ArrayList<>();
-    private MutableLiveData<List<Transaction>> mutableLiveData = new MutableLiveData<>();
-
-
     public Task<Void> saveTransaction(Transaction trans){
         return db.collection("transactions").document().set(trans);
     }
@@ -45,7 +36,7 @@ public class TransactionRepository {
     }
 
     public void getUserTransactions(){
-        db.collection("transactions")
+         db.collection("transactions")
                 .whereEqualTo("firebaseUser", firebaseUser.getCurrentUser().getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -60,14 +51,8 @@ public class TransactionRepository {
                         }
                     }
                 });
+
     }
 
-    public MutableLiveData<List<Transaction>> getMutableLiveDataItems() {
-        items.add(new Transaction("2019-01-01", 10,10," 132456"));
-        items.add(new Transaction("2019-01-01", 10,10," 132456"));
-        items.add(new Transaction("2019-01-01", 10,10," 132456"));
-        mutableLiveData.setValue(items);
-        return mutableLiveData;
-    }
 
 }
